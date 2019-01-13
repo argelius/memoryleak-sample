@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>Memory leak example #1</title>
+
+    <style>
+      html {
+        font-size: 150%;
+        font-family: Helvetica, sans-serif;
+      }
+
+      #todos .todo {
+        cursor: pointer;
+      }
+
+      #todos .todo:hover {
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <input id="text" type="text">
+      <button type="submit" id="add">Add</button>
+    </form>
+
+    <ul id="todos"></ul>
+
+    <script>
+      const form = document.querySelector('#form');
+      const textInput = document.querySelector('#text');
+      const addButton = document.querySelector('#add');
+      const todos = document.querySelector('#todos');
+      const todoHistory = [];
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const text = textInput.value;
+
+        if (text.length > 0) {
+          const todo = document.createElement('li');
+          todo.classList.add('todo');
+          todo.textContent = text;
+
+          todo.addEventListener('click', () => {
+            todo.remove();
+          });
+
+          todoHistory.push(todo);
+
+          textInput.value = '';
+          textInput.focus();
+          todos.appendChild(todo);
+        }
+      });
+    </script>
+  </body>
+</html>
