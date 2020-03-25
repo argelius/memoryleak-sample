@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>Memory leak example #2</title>
+
+    <style>
+      html {
+        font-family: Helvetica, sans-serif;
+      }
+
+      .timer {
+        font-size: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="start">Start timer</button>
+    <button id="stop">Stop timer</button>
+    <div id="container"></div>
+
+    <script>
+      class Timer {
+        constructor() {
+          this.time = 0;
+        }
+
+        start() {
+          this.interval = setInterval(() => {
+            this.time += 1;
+
+            if (this.onUpdate) {
+              this.onUpdate(this.time);
+            }
+          }, 10);
+        }
+
+        stop() {
+          clearInterval(this.interval);
+        }
+      }
+
+      const container = document.querySelector('#container');
+      const startButton = document.querySelector('#start');
+      const stopButton = document.querySelector('#stop');
+      const time = document.querySelector('#time');
+      
+      let timer;
+
+      startButton.addEventListener('click', () => {
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        timer = new Timer();
+
+        timer.start();
+
+        const div = document.createElement('div');
+        div.classList.add('timer');
+        div.innerHTML = '0';
+
+        container.appendChild(div);
+
+        timer.onUpdate = (time) => {
+          div.innerHTML = time;
+        }
+      });
+
+      stopButton.addEventListener('click', () => {
+        startButton.disabled = false;
+        stopButton.disabled = true;
+
+        timer.stop();
+        timer.onUpdate = null;
+
+        container.innerHTML = '';
+      });
+    </script>
+  </body>
+</html>
